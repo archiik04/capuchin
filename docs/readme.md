@@ -91,6 +91,12 @@ Run npx script
 ``` Bash
 npx concurrently "cd ./backend/cmd/server && go run main.go" "npm run dev --prefix ./frontend"
 ```
+
+- **Frontend**: http://localhost:5173
+- **Health Check**: http://localhost:8080/health
+- **Backend API**: http://localhost:8080/todos
+
+
 ---
 
 
