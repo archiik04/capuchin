@@ -80,7 +80,7 @@ npm run dev
 
 ---
 
-### Method 2:   Using npm Script 
+### Method 2:   Using npm Script (In project home directory)
 
 Install npm packages
 ``` Bash
@@ -94,7 +94,7 @@ npx concurrently "cd ./backend/cmd/server && go run main.go" "npm run dev --pref
 ---
 
 
-### Method 3: Docker 
+### Method 3: Docker (In project home directory)
 
 We support two modes: **Development** (Hot-Reload) and **Production** (Lean Static Builds).
 
