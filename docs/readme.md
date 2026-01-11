@@ -3,49 +3,70 @@ A basic full-stack todo list application with a Go (Golang) REST API backend and
 
 ## 🚀 Features Implemented
 
-Backend (Go + Gin): RESTful API with CRUD operations.
-Frontend (React + Vite): Modern reactive UI with Hooks (useState, useEffect).
-Styling (Tailwind CSS): Dark-mode interface with optimistic UI.
-Persistence: File-based JSON storage.
-Architecture: Refactored into "Standard Go Layout" (cmd, internal).
+* **Backend (Go + Gin):** RESTful API with CRUD operations.
+* **Frontend (React + Vite):** Modern reactive UI with Hooks (useState, useEffect).
+* **Styling (Tailwind CSS):** Dark-mode interface with optimistic UI.
+* **Persistence:** File-based JSON storage.
+* **Architecture:** Refactored into "Standard Go Layout" (cmd, internal).
+* **Containerization:** Docker & Docker Compose for Dev/Prod.
 
 
-## 📂 Final Project Structure
+## 📂 Project Structure
 
-```capuchin/
+```
+capuchin/
 ├── backend/
-│   ├── cmd/server/main.go       # Entry point
-│   ├── internal/models/todo.go  # Data structures
-│   ├── internal/store/file.go   # File I/O logic
-│   ├── db/db.json               # Database
+│   ├── cmd/
+│   │   └── server/
+│   │       └── main.go       # Entry point
+│   ├── db/
+│   │   └── db.json               # Database
+│   ├── internal/
+│   │   ├── api/
+│   │   ├── models/
+│   │   │   └── todo.go     # Data structures
+│   │   └── store/
+│   │       └── file.go     # File I/O logic
+│   ├── Dockerfile               # Backend Container
+│   ├── air.toml                 # Hot Reload Config
 │   ├── go.mod                   # Dependencies
 │   └── go.sum
-└── frontend/
-    ├── src/App.tsx              # React UI & Logic
-    ├── src/index.css            # Tailwind Imports
-    ├── vite.config.ts           # Build Config
-    └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── App.tsx
+│   │   ├── App.css
+│   │   └── main.tsx
+│   ├── Dockerfile               # Frontend Container
+│   ├── vite.config.ts           # Build Config
+│   └── package.json
+├── docker-compose.yml           # Prod Orchestration
+├── docker-compose.dev.yml       # Dev Mode Overrides
+└── makefile                     # Command shortcuts
+└── package.json                     
+
 ```
 
 ## Tech stack
-* **Backend:** Go (REST API).
-* Backend Framework: Gin
+* **Backend:** Go (REST API)
+* **Backend Framework:** Gin
 * **Frontend:** React, TypeScript
+* **Containerize:** Docker
 * **Database:** File System storage
 
 ## 🛠️ How to Run
 
-### <u>  Method 1>   In separate terminals </u>
+### Method 1:   In separate terminals
 
 
-#### <B> Backend: </b>
+
+#### <b> Backend: </b>
 
 Open Terminal 1
 ``` Bash
 cd backend
 go run cmd/server/main.go
 ```
-Server runs on localhost:8080
+`Server runs on localhost:8080`
 
 #### Frontend:
 
@@ -54,9 +75,12 @@ Open Terminal 2
 cd frontend
 npm run dev
 ```
-Browser opens at localhost:5173
+`Client opens at localhost:5173`
 
-### <u> Method 2>   Using npm Script </u>
+
+---
+
+### Method 2:   Using npm Script 
 
 Install npm packages
 ``` Bash
@@ -67,6 +91,47 @@ Run npx script
 ``` Bash
 npx concurrently "cd ./backend/cmd/server && go run main.go" "npm run dev --prefix ./frontend"
 ```
+---
+
+
+### Method 3: Docker 
+
+We support two modes: **Development** (Hot-Reload) and **Production** (Lean Static Builds).
+
+#### <u >Development Mode</u >
+Runs the backend with `Air` (Go hot-reload) and Frontend with `Vite` (HMR). Changes to code are reflected instantly.
+
+```bash
+make dev
+# OR
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+- **Frontend**: http://localhost:5173
+- **Health Check**: http://localhost:8080/health
+- **Backend API**: http://localhost:8080/todos
+
+#### <u > Production Mode</u >
+Runs a lean, production-ready build (`scratch` image for Go, `nginx` for React).
+
+```bash
+make prod
+# OR
+docker compose up --build
+```
+- **App**: http://localhost
+- **Health Check**: http://localhost:8080/health
+- **Backend API**: http://localhost:8080/todos
+
+#### Stop Containers
+```bash
+make down
+# OR
+#in active terminal
+ctrl+c or cmd+c 
+```
+
+---
+
 
 
     
@@ -74,4 +139,5 @@ npx concurrently "cd ./backend/cmd/server && go run main.go" "npm run dev --pref
 
 * **Go:** Structs, Slices, JSON Marshalling, Modules, Package Exporting.
 * **React:** Functional Components, Hooks, API Integration (fetch, async/await), Controlled Inputs.
+* **Docker:** Multi-stage builds, Scratch images, Docker Compose overrides.
 * **General:** REST API Design, CORS, JSON Persistence, Refactoring,TypeScript(for styling), axios (for API calls)

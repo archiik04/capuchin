@@ -1,0 +1,12 @@
+.git
+vendor
+bin
+server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+test
+doc
+*~
