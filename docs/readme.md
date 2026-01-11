@@ -35,7 +35,10 @@ Architecture: Refactored into "Standard Go Layout" (cmd, internal).
 
 ## 🛠️ How to Run
 
-### Backend:
+### <u>  Method 1>   In separate terminals </u>
+
+
+#### <B> Backend: </b>
 
 Open Terminal 1
 ``` Bash
@@ -44,7 +47,7 @@ go run cmd/server/main.go
 ```
 Server runs on localhost:8080
 
-### Frontend:
+#### Frontend:
 
 Open Terminal 2
 ``` Bash
@@ -52,6 +55,18 @@ cd frontend
 npm run dev
 ```
 Browser opens at localhost:5173
+
+### <u> Method 2>   Using npm Script </u>
+
+Install npm packages
+``` Bash
+npm i
+```
+Run npx script
+
+``` Bash
+npx concurrently "cd ./backend/cmd/server && go run main.go" "npm run dev --prefix ./frontend"
+```
 
 
     
