@@ -18,30 +18,30 @@ capuchin/
 ├── backend/
 │   ├── cmd/
 │   │   └── server/
-│   │       └── main.go       # Entry point
+│   │       └── main.go           # Entry point
 │   ├── db/
 │   │   └── db.json               # Database
 │   ├── internal/
 │   │   ├── api/
 │   │   ├── models/
-│   │   │   └── todo.go     # Data structures
+│   │   │   └── todo.go           # Data structures
 │   │   └── store/
-│   │       └── file.go     # File I/O logic
-│   ├── Dockerfile               # Backend Container
-│   ├── air.toml                 # Hot Reload Config
-│   ├── go.mod                   # Dependencies
+│   │       └── file.go           # File I/O logic
+│   ├── Dockerfile                # Backend Container
+│   ├── air.toml                  # Hot Reload Config
+│   ├── go.mod                    # Dependencies
 │   └── go.sum
 ├── frontend/
 │   ├── src/
 │   │   ├── App.tsx
 │   │   ├── App.css
 │   │   └── main.tsx
-│   ├── Dockerfile               # Frontend Container
-│   ├── vite.config.ts           # Build Config
+│   ├── Dockerfile                # Frontend Container
+│   ├── vite.config.ts            # Build Config
 │   └── package.json
-├── docker-compose.yml           # Prod Orchestration
-├── docker-compose.dev.yml       # Dev Mode Overrides
-└── makefile                     # Command shortcuts
+├── docker-compose.yml            # Prod Orchestration
+├── docker-compose.dev.yml        # Dev Mode Overrides
+└── makefile                      # Command shortcuts
 └── package.json                     
 
 ```
