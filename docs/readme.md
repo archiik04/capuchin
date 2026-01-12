@@ -1,4 +1,4 @@
-## Capuchin: A basic Todo app
+## 📜 Capuchin: A basic Todo app
 A basic full-stack todo list application with a Go (Golang) REST API backend and a React frontend with a professional-grade storage architecture.
 
 ## 🚀 Features Implemented
@@ -46,8 +46,11 @@ capuchin/
 
 ```
 
-## Tech stack
+## 💻 Tech Stack
 * **Backend:** Go (REST API)
+* **Frontend:** React, TypeScript
+* **Containerize:** Docker
+* **Database:** File System storage
 * **Backend Framework:** Gin
 * **Frontend:** React, TypeScript
 * **Containerize:** Docker
