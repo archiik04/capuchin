@@ -11,6 +11,9 @@ function App() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [inputValue, setInputValue] = useState("")
   const [loading, setLoading] = useState(true)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editValue, setEditValue] = useState("")
+
 
   const API_URL = "http://localhost:8080/todos"
 
@@ -89,6 +92,28 @@ function App() {
     }
   }
 
+  //edit the to-do
+  const saveEdit = async (id: string) => {
+    const value = editValue.trim()
+    if (!value) return
+
+    try {
+      const res = await fetch(`${API_URL}/${id}/edit`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item: value })
+      })
+
+      const updatedTodo = await res.json()
+      setTodos(todos.map(t => t.id === id ? updatedTodo : t))
+      setEditValue("")
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
@@ -129,7 +154,7 @@ function App() {
             <ul className="divide-y divide-gray-700">
               {todos.map((todo) => (
                 <li key={todo.id} className="group flex items-center justify-between p-4 hover:bg-gray-700/30 transition-colors duration-150">
-                  <div className="flex items-center gap-3 flex-1 overflow-hidden">
+                  <div className="flex items-center gap-3 flex-1">
                     <button
                       onClick={() => toggleTodo(todo.id, todo.completed)}
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${todo.completed
@@ -143,14 +168,59 @@ function App() {
                         </svg>
                       )}
                     </button>
-                    <span
-                      onClick={() => toggleTodo(todo.id, todo.completed)}
-                      className={`text-lg cursor-pointer select-none transition-colors duration-200 truncate ${todo.completed ? 'text-gray-500 line-through' : 'text-gray-200'
-                        }`}
-                    >
-                      {todo.item}
-                    </span>
+
+                    {editingId === todo.id ? (
+                      <div className="flex items-center gap-2 w-full">
+                        <input
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              setEditingId(null)
+                              saveEdit(todo.id)
+                            }
+                          }}
+                          onBlur={() => {
+                            setEditingId(null)
+                            saveEdit(todo.id)
+                          }}
+                          autoFocus
+                          className="grow bg-gray-900 text-white px-2 py-1 rounded border border-gray-600 focus:outline-none min-w-0"
+                        />
+
+                        {/* Save */}
+                        <button
+                          onClick={() => {
+                            setEditingId(null)
+                            saveEdit(todo.id)
+                          }}
+                          className="text-green-400 hover:text-green-300 flex-shrink-0"
+                          title="Save"
+                        >
+                          ✔️
+                        </button>
+                      </div>
+                    ) : (
+                      <span
+                        onClick={() => toggleTodo(todo.id, todo.completed)}
+                        className={`text-lg cursor-pointer select-none truncate ${todo.completed ? 'text-gray-500 line-through' : 'text-gray-200'
+                          }`}
+                      >
+                        {todo.item}
+                      </span>
+                    )}
+
+
+
+
                   </div>
+                  <button
+                    onClick={() => {
+                      setEditingId(todo.id)
+                      setEditValue(todo.item)
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-blue-400">✏️
+                  </button>
 
                   <button
                     onClick={() => deleteTodo(todo.id)}

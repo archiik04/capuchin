@@ -122,6 +122,34 @@ func main() {
 		c.JSON(404, gin.H{"message": "Todo not found"})
 	})
 
+	// PATCH /todos/:id/edit - Edit todo text
+	r.PATCH("/todos/:id/edit", func(c *gin.Context) {
+		id := c.Param("id")
+
+		var body struct {
+			Item string `json:"item"`
+		}
+
+		if err := c.ShouldBindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid body"})
+			return
+		}
+
+		mu.Lock()
+		defer mu.Unlock()
+
+		for i, t := range todos {
+			if t.ID == id {
+				todos[i].Item = body.Item
+				store.Save(dbPath, todos)
+				c.JSON(200, todos[i])
+				return
+			}
+		}
+
+		c.JSON(404, gin.H{"message": "Todo not found"})
+	})
+
 	r.Run(":8080")
 }
 
