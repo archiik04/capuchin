@@ -194,7 +194,7 @@ function App() {
                             setEditingId(null)
                             saveEdit(todo.id)
                           }}
-                          className="text-green-400 hover:text-green-300 flex-shrink-0"
+                          className="text-green-400 hover:text-green-300 shrink-0"
                           title="Save"
                         >
                           ✔️
