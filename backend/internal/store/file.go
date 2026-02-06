@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
-	"capuchin/internal/models" // Import our models package
+	"capuchin/internal/models"
 )
 
 // Load reads the file and returns the list of todos

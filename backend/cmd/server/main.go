@@ -1,32 +1,41 @@
 package main
 
 import (
+	"capuchin/internal/auth"
+	"capuchin/internal/database"
 	"capuchin/internal/models"
 	"capuchin/internal/store"
-	"net/http"
 
 	"encoding/json"
+	"net/http"
 	"os"
-
 	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
 
 // path to db
 const dbPath = "../../db/db.json"
 
-// create a list of todos imported from models/todo.go
 var todos []models.Todo
 var mu sync.RWMutex
 
 func main() {
-	// Load data from disk on startup
-	var err error
+
+	// Load env
+	err := godotenv.Load()
+	if err != nil {
+		panic("Error loading .env file")
+	}
+
+	// Connect Database
+	database.Connect()
+
+	// Load todos once
 	todos, err = store.Load(dbPath)
 	if err != nil {
-		//if loading  fails on first run (file not found), just start empty
 		todos = []models.Todo{}
 	}
 
@@ -36,7 +45,7 @@ func main() {
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
@@ -44,23 +53,22 @@ func main() {
 		c.Next()
 	})
 
-	//health check route
+	// Health
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
 
-	// route to return  list of todos
+	// todos
+
 	r.GET("/todos", func(c *gin.Context) {
 		mu.RLock()
 		defer mu.RUnlock()
 		c.JSON(200, todos)
 	})
 
-	// route to add a new item
 	r.POST("/todos", func(c *gin.Context) {
 		var newTodo models.Todo
 
-		// Bind the incoming JSON to our struct
 		if err := c.ShouldBindJSON(&newTodo); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -68,32 +76,25 @@ func main() {
 
 		newTodo.ID = uuid.New().String()
 
-		// Add to the list
 		mu.Lock()
 		todos = append(todos, newTodo)
-		store.Save(dbPath, todos) // Save
+		store.Save(dbPath, todos)
 		mu.Unlock()
 
-		// Respond with the created item
 		c.JSON(http.StatusOK, newTodo)
 	})
 
-	// PATCH /todos/:id - Toggle "completed" status
 	r.PATCH("/todos/:id", func(c *gin.Context) {
-		id := c.Param("id") // Get the ID from the URL
+		id := c.Param("id")
 
 		mu.Lock()
 		defer mu.Unlock()
 
-		// Iterate through the list to find the item
 		for i, t := range todos {
 			if t.ID == id {
-				// Flip the status
 				todos[i].Completed = !todos[i].Completed
-
-				// Respond with the updated item
+				store.Save(dbPath, todos)
 				c.JSON(200, todos[i])
-				store.Save(dbPath, todos) // <--- Use store.Save
 				return
 			}
 		}
@@ -101,7 +102,6 @@ func main() {
 		c.JSON(404, gin.H{"message": "Todo not found"})
 	})
 
-	// DELETE /todos/:id - Delete an item
 	r.DELETE("/todos/:id", func(c *gin.Context) {
 		id := c.Param("id")
 
@@ -110,19 +110,16 @@ func main() {
 
 		for i, t := range todos {
 			if t.ID == id {
-				// Delete: Append everything AFTER index i to everything BEFORE index i
 				todos = append(todos[:i], todos[i+1:]...)
-
+				store.Save(dbPath, todos)
 				c.JSON(200, gin.H{"message": "Todo deleted"})
-				store.Save(dbPath, todos) // <--- Use store.Save
-
 				return
 			}
 		}
+
 		c.JSON(404, gin.H{"message": "Todo not found"})
 	})
 
-	// PATCH /todos/:id/edit - Edit todo text
 	r.PATCH("/todos/:id/edit", func(c *gin.Context) {
 		id := c.Param("id")
 
@@ -150,10 +147,14 @@ func main() {
 		c.JSON(404, gin.H{"message": "Todo not found"})
 	})
 
+	// Authentication
+	r.POST("/signup", auth.SignupHandler)
+	r.POST("/login", auth.LoginHandler)
+
 	r.Run(":8080")
 }
 
 func saveTodos() {
-	data, _ := json.MarshalIndent(todos, "", "  ") // Pretty print JSON
+	data, _ := json.MarshalIndent(todos, "", "  ")
 	os.WriteFile(dbPath, data, 0644)
 }
