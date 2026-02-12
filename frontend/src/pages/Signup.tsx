@@ -82,6 +82,14 @@ export default function Signup() {
             <p className="text-green-400 text-sm">{success}</p>
           )}
 
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg"
+          >
+            Already Registered? Login
+          </button>
+
+
         </div>
       </div>
     </div>
