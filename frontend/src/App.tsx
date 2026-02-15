@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import Todos from "./pages/Todos"
@@ -6,10 +6,10 @@ import Todos from "./pages/Todos"
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/signup" />} />
+      <Route path="/" element={<Todos />} />
+      <Route path="/todos" element={<Todos />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/todos" element={<Todos />} />
     </Routes>
   )
 }

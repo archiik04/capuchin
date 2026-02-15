@@ -3,6 +3,7 @@ package main
 import (
 	"capuchin/internal/auth"
 	"capuchin/internal/database"
+	"capuchin/internal/middleware"
 	"capuchin/internal/models"
 	"capuchin/internal/store"
 
@@ -150,6 +151,117 @@ func main() {
 	// Authentication
 	r.POST("/signup", auth.SignupHandler)
 	r.POST("/login", auth.LoginHandler)
+
+	// Authenticated user todos (require JWT)
+	userTodos := r.Group("/user")
+	userTodos.Use(middleware.AuthRequired())
+	{
+		// Get all todos for authenticated user
+		userTodos.GET("/todos", func(c *gin.Context) {
+			userID := c.GetUint("userID")
+
+			var todos []models.UserTodo
+			result := database.DB.Where("user_id = ?", userID).Find(&todos)
+
+			if result.Error != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch todos"})
+				return
+			}
+
+			c.JSON(http.StatusOK, todos)
+		})
+
+		// Create a new todo for authenticated user
+		userTodos.POST("/todos", func(c *gin.Context) {
+			userID := c.GetUint("userID")
+
+			var input struct {
+				Item      string `json:"item"`
+				Completed bool   `json:"completed"`
+			}
+
+			if err := c.ShouldBindJSON(&input); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+				return
+			}
+
+			todo := models.UserTodo{
+				UserID:    userID,
+				Item:      input.Item,
+				Completed: input.Completed,
+			}
+
+			result := database.DB.Create(&todo)
+			if result.Error != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create todo"})
+				return
+			}
+
+			c.JSON(http.StatusOK, todo)
+		})
+
+		// Toggle completion status
+		userTodos.PATCH("/todos/:id", func(c *gin.Context) {
+			userID := c.GetUint("userID")
+			id := c.Param("id")
+
+			var todo models.UserTodo
+			result := database.DB.Where("id = ? AND user_id = ?", id, userID).First(&todo)
+
+			if result.Error != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+				return
+			}
+
+			todo.Completed = !todo.Completed
+			database.DB.Save(&todo)
+
+			c.JSON(http.StatusOK, todo)
+		})
+
+		// Delete a todo
+		userTodos.DELETE("/todos/:id", func(c *gin.Context) {
+			userID := c.GetUint("userID")
+			id := c.Param("id")
+
+			result := database.DB.Where("id = ? AND user_id = ?", id, userID).Delete(&models.UserTodo{})
+
+			if result.Error != nil || result.RowsAffected == 0 {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "Todo deleted"})
+		})
+
+		// Edit a todo's text
+		userTodos.PATCH("/todos/:id/edit", func(c *gin.Context) {
+			userID := c.GetUint("userID")
+			id := c.Param("id")
+
+			var input struct {
+				Item string `json:"item"`
+			}
+
+			if err := c.ShouldBindJSON(&input); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+				return
+			}
+
+			var todo models.UserTodo
+			result := database.DB.Where("id = ? AND user_id = ?", id, userID).First(&todo)
+
+			if result.Error != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+				return
+			}
+
+			todo.Item = input.Item
+			database.DB.Save(&todo)
+
+			c.JSON(http.StatusOK, todo)
+		})
+	}
 
 	r.Run(":8080")
 }

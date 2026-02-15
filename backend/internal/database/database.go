@@ -1,7 +1,6 @@
 package database
 
 import (
-	"capuchin/internal/models"
 	"log"
 	"os"
 
@@ -21,10 +20,4 @@ func Connect() {
 	}
 
 	DB = db
-
-	// CREATE USERS TABLE IF NOT EXISTS
-	err = DB.AutoMigrate(&models.User{})
-	if err != nil {
-		log.Fatal("Migration failed:", err)
-	}
 }
