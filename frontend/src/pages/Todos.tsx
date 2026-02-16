@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 interface Todo {
   id: string;
@@ -50,7 +50,7 @@ export default function Todos() {
     ? "http://localhost:8080/user/todos"
     : "http://localhost:8080/todos"
 
-  // Decode email from JWT payload (middle part, base64)
+  // Decode email from JWT payload 
   const userEmail = (() => {
     if (!token) return null
     try {
@@ -82,7 +82,7 @@ export default function Todos() {
       .then(data => { setTodos((data || []).map(normalise)); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
-
+// add new todos
   const addTodo = async () => {
     if (!inputValue.trim()) return
     try {
@@ -96,7 +96,7 @@ export default function Todos() {
       setInputValue("")
     } catch (e) { console.error(e) }
   }
-
+// toggle the todos
   const toggleTodo = async (id: string, current: boolean) => {
     setTodos(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t))
     try {
@@ -105,14 +105,14 @@ export default function Todos() {
       setTodos(prev => prev.map(t => t.id === id ? { ...t, completed: current } : t))
     }
   }
-
+// delete the todos
   const deleteTodo = async (id: string) => {
     const old = [...todos]
     setTodos(prev => prev.filter(t => t.id !== id))
     try { await fetch(`${API_URL}/${id}`, { method: "DELETE", headers: authHeaders() }) }
     catch { setTodos(old) }
   }
-
+// edit the todos
   const saveEdit = async (id: string) => {
     const val = editValue.trim()
     if (!val) return
@@ -135,7 +135,7 @@ export default function Todos() {
   )
 
   return (
-    <>
+    <> 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }

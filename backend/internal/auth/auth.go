@@ -3,7 +3,6 @@ package auth
 import (
 	"capuchin/internal/database"
 	"capuchin/internal/models"
-	"capuchin/internal/utils"
 	"strings"
 
 	"net/http"
@@ -26,7 +25,7 @@ func SignupHandler(c *gin.Context) {
 
 	// Hash password
 	hash, err := bcrypt.GenerateFromPassword(
-		[]byte(input.Password),
+		[]byte(input.PasswordHash),
 		bcrypt.DefaultCost,
 	)
 
@@ -37,7 +36,7 @@ func SignupHandler(c *gin.Context) {
 		return
 	}
 
-	input.Password = string(hash)
+	input.PasswordHash = string(hash)
 
 	// Save user to DB
 	result := database.DB.Create(&input)
@@ -87,8 +86,8 @@ func LoginHandler(c *gin.Context) {
 
 	// Compare password hash
 	err := bcrypt.CompareHashAndPassword(
-		[]byte(user.Password),
-		[]byte(input.Password),
+		[]byte(user.PasswordHash),
+		[]byte(input.PasswordHash),
 	)
 
 	if err != nil {
@@ -99,7 +98,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// Generate JWT token
-	token, err := utils.GenerateToken(user.ID, user.Email)
+	token, err := GenerateToken(user.UserID, user.Email)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
