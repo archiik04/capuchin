@@ -1,22 +1,35 @@
-# Build Stage
-FROM node:24-alpine AS builder
+FROM node:24-alpine AS deps
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json first to leverage caching
 COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm ci
 
-# Copy the rest of the source code
+
+# Build Stage
+FROM deps AS builder
+
+WORKDIR /app
+
 COPY . .
 
 # Build the application
 RUN npm run build
 
-# Final Stage
-FROM nginx:alpine
+FROM node:24-alpine AS dev
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules .
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev"]
+
+
+FROM nginx:alpine as prod
 
 # Copy the built assets from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
