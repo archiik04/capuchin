@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { login } from "../api/Auth.ts"
+import { login } from "../api/auth"
 import { useNavigate } from "react-router"
 
 const MonkeyLogo = () => (
