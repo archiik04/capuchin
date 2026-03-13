@@ -21,15 +21,15 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
   return (
     <div
       className={[
-        "border-[1.5px] rounded-[14px] py-[15px] px-[18px] flex items-center gap-[13px]",
-        "shadow-[0_1px_4px_rgba(0,0,0,0.03)] transition-all duration-[180ms] ease-[ease]",
+        "border-[1.5px] rounded-[14px] py-3.75 px-4.5 flex items-center gap-3.25",
+        "shadow-[0_1px_4px_rgba(0,0,0,0.03)] transition-all duration-180 ease-[ease]",
         "animate-slide-in hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-px group",
         todo.completed ? "bg-[#fafafa] border-[#f5f5f5]" : "bg-white border-[#d1d5db] hover:border-[#adb5bd]",
       ].join(" ")}
     >
       <button
         className={[
-          "w-[21px] h-[21px] rounded-full border-2 cursor-pointer flex items-center justify-center flex-shrink-0 transition-all duration-150",
+          "w-5.25 h-5.25 rounded-full border-2 cursor-pointer flex items-center justify-center shrink-0 transition-all duration-150",
           todo.completed
             ? "bg-[#111] border-[#111] text-white"
             : "bg-[#111] border-[#111] hover:bg-[#333] hover:border-[#333]",
@@ -44,7 +44,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
         {editing ? (
           <input
             autoFocus
-            className="w-full border-[1.5px] border-[#111] rounded-lg py-[5px] px-2.5 text-[0.9rem] font-semibold text-[#111] outline-none bg-white"
+            className="w-full border-[1.5px] border-[#111] rounded-lg py-1.25 px-2.5 text-[0.9rem] font-semibold text-[#111] outline-none bg-white"
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={(e) => {

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowLeft } from "lucide-react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
@@ -39,17 +39,20 @@ export default function Signup() {
     <div className="grid-bg min-h-screen flex flex-col">
       <Navbar
         right={
-          <button
-            className="text-[0.83rem] font-semibold text-[#6b7280] bg-transparent border-none cursor-pointer transition-colors hover:text-[#111]"
+         <Button
+            variant="ghost"
+            size="md"
+            className="rounded-full"
             onClick={() => navigate("/")}
           >
-            ← Back to home
-          </button>
+            <ArrowLeft size={14} />
+            Back to home
+          </Button>
         }
       />
 
       <div className="flex-1 flex items-center justify-center p-10 px-6">
-        <div className="bg-white border-[1.5px] border-[#e5e7eb] rounded-3xl p-12 px-11 w-full max-w-[420px] shadow-[0_8px_48px_rgba(0,0,0,0.06)] max-[480px]:p-9 max-[480px]:px-6">
+        <div className="bg-white border-[1.5px] border-[#e5e7eb] rounded-3xl p-12 px-11 w-full max-w-105 shadow-[0_8px_48px_rgba(0,0,0,0.06)] max-[480px]:p-9 max-[480px]:px-6">
           <h1 className="text-[1.85rem] font-black tracking-[-0.04em] text-[#111] mb-1.5 leading-[1.1]">
             Create your account
           </h1>

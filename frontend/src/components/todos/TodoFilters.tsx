@@ -12,8 +12,8 @@ export function TodoFilters({ filter, active, onChange }: TodoFiltersProps) {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-2.5">
-        <span className="text-[0.72rem] font-bold text-[#9ca3af] uppercase tracking-[0.1em]">Your Tasks</span>
-        <span className="text-[0.72rem] font-bold bg-[#f3f4f6] text-[#6b7280] rounded-full py-[3px] px-2.5">
+        <span className="text-[0.72rem] font-bold text-[#9ca3af] uppercase tracking-widest">Your Tasks</span>
+        <span className="text-[0.72rem] font-bold bg-[#f3f4f6] text-[#6b7280] rounded-full py-0.75 px-2.5">
           {active} left
         </span>
       </div>
@@ -23,7 +23,7 @@ export function TodoFilters({ filter, active, onChange }: TodoFiltersProps) {
             key={f}
             onClick={() => onChange(f)}
             className={[
-              "py-[5px] px-[13px] rounded-full text-[0.77rem] font-semibold cursor-pointer border-[1.5px] transition-all duration-150",
+              "py-1.25 px-3.25 rounded-full text-[0.77rem] font-semibold cursor-pointer border-[1.5px] transition-all duration-150",
               filter === f
                 ? "bg-[#111] text-white border-[#111]"
                 : "bg-transparent text-[#9ca3af] border-transparent hover:text-[#374151]",
