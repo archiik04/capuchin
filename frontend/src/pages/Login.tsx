@@ -4,7 +4,6 @@ import { Navbar } from "@/components/layout/Navbar"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
 import { Alert } from "@/components/ui/Alert"
-import { Divider } from "@/components/ui/Divider"
 import { useAuth } from "@/hooks/useAuth"
 import { authApi } from "@/lib/api"
 import { ArrowRight, ArrowLeft } from "lucide-react"
@@ -98,7 +97,11 @@ export default function Login() {
 
           {error && <Alert type="error" message={error} />}
 
-          <Divider label="or" />
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-[#f3f4f6]" />
+            <span className="text-[#d1d5db] font-semibold text-[0.75rem]">or</span>
+            <div className="flex-1 h-px bg-[#f3f4f6]" />
+          </div>
 
           <Button
             variant="secondary"

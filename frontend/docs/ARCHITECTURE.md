@@ -34,7 +34,6 @@ src/
 │   └── ui/           # Generic UI primitives
 │       ├── Alert.tsx
 │       ├── Button.tsx
-│       ├── Divider.tsx
 │       ├── EmptyState.tsx
 │       └── Input.tsx
 ├── config/            # Configuration files
@@ -339,16 +338,3 @@ const deleteTodo = useCallback(async (id: string) => {
 | preview | `npm run preview` | Preview production build |
 
 ---
-
-## Future Considerations
-
-Potential improvements for the architecture:
-
-1. **State Management** - Consider React Query or Zustand for complex state
-2. **API Client** - Switch from fetch to Axios for interceptors
-3. **Error Boundaries** - Add error boundaries for graceful error handling
-4. **Testing** - Add unit tests with Vitest and component tests with Testing Library
-5. **Form Handling** - Consider React Hook Form for complex forms
-6. **Loading States** - Add skeleton loaders for better UX
-7. **API Types** - Generate TypeScript types from OpenAPI spec
-</CONTENTS>
