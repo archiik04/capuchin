@@ -1,11 +1,11 @@
-import { useState, forwardRef } from "react"
+import { useState } from "react"
 import { Plus } from "lucide-react"
 
 interface TodoInputProps {
   onAdd: (item: string) => void
 }
 
-export const TodoInput = forwardRef<HTMLDivElement, TodoInputProps>(({ onAdd }, ref) => {
+export function TodoInput({ onAdd }: TodoInputProps) {
   const [value, setValue] = useState("")
 
   const handleAdd = () => {
@@ -16,7 +16,6 @@ export const TodoInput = forwardRef<HTMLDivElement, TodoInputProps>(({ onAdd }, 
 
   return (
     <div
-      ref={ref}
       className="flex items-center gap-2.5 max-w-140 mx-auto bg-white border-[1.5px] border-[#e5e7eb] rounded-full py-1.5 pl-5.5 pr-1.5 shadow-[0_4px_24px_rgba(0,0,0,0.07)] transition-[border-color,box-shadow] duration-200 focus-within:border-[#111] focus-within:shadow-[0_4px_32px_rgba(0,0,0,0.12)]"
     >
       <input
@@ -37,6 +36,4 @@ export const TodoInput = forwardRef<HTMLDivElement, TodoInputProps>(({ onAdd }, 
       </button>
     </div>
   )
-})
-
-TodoInput.displayName = "TodoInput"
+}

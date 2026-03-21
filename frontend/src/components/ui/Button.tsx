@@ -1,4 +1,4 @@
-import { type ButtonHTMLAttributes, forwardRef } from "react"
+import { type ButtonHTMLAttributes } from "react"
 import { Loader2 } from "lucide-react"
 
 type Variant = "primary" | "secondary" | "ghost" | "danger"
@@ -28,25 +28,20 @@ const sizeClasses: Record<Size, string> = {
   lg: "py-[13px] px-6 text-[0.9rem] font-bold",
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", size = "md", fullWidth = false, loading = false, className = "", children, ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        disabled={loading || props.disabled}
-        className={[
-          "rounded-xl font-semibold cursor-pointer transition-all duration-150 flex items-center justify-center gap-1.5",
-          variantClasses[variant],
-          sizeClasses[size],
-          fullWidth ? "w-full" : "",
-          className,
-        ].join(" ")}
-        {...props}
-      >
-        {loading ? <Loader2 size={16} className="animate-spin" /> : children}
-      </button>
-    )
-  },
-)
-
-Button.displayName = "Button"
+export function Button({ variant = "primary", size = "md", fullWidth = false, loading = false, className = "", children, ...props }: ButtonProps) {
+  return (
+    <button
+      disabled={loading || props.disabled}
+      className={[
+        "rounded-xl font-semibold cursor-pointer transition-all duration-150 flex items-center justify-center gap-1.5",
+        variantClasses[variant],
+        sizeClasses[size],
+        fullWidth ? "w-full" : "",
+        className,
+      ].join(" ")}
+      {...props}
+    >
+      {loading ? <Loader2 size={16} className="animate-spin" /> : children}
+    </button>
+  )
+}
